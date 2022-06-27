@@ -58,5 +58,5 @@ export default createRouter({
       meta: {layout: 'main'},
       component: () => import('./views/Record.vue')
     }
-  ]
+  ],
 })
