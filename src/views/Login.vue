@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import { useLoginForm } from "../use/login-form";
+import { onMounted } from "vue";
+import { message } from "../utils/message.plugin";
+import { useRoute } from "vue-router";
+import messages from "../utils/message";
 
-const router = useRouter();
-const { email, eError, eBlur, pBlur, password, pError } = useLoginForm();
+const route = useRoute();
 
-function submitHandler() {
-  router.push("/");
-}
+onMounted(() => {
+  const status: string | null = messages[route.query.message];
+  if (status) {
+    message(status);
+  }
+});
+
+const { email, eError, password, pError, onSubmit } = useLoginForm();
 </script>
 
 <template>
-  <form @submit.prevent="submitHandler" class="card auth-card">
+  <form @submit.prevent="onSubmit" class="card auth-card">
     <div class="card-content">
       <span class="card-title">Домашняя бухгалтерия</span>
       <div class="input-field">
         <input
           v-model="email"
-          @blur="eBlur"
           id="email"
           type="text"
           :class="eError ? 'invalid' : 'validate'"
@@ -28,11 +34,10 @@ function submitHandler() {
       <div class="input-field">
         <input
           v-model="password"
-          @blur="pBlur"
           id="password"
           type="password"
-          class="validate"
-          :class="{ invalid: pError }"
+          autocomplete="on"
+          :class="pError ? 'invalid' : 'validate'"
         />
         <label for="password">Пароль</label>
         <small class="helper-text invalid" v-if="pError">{{ pError }}</small>

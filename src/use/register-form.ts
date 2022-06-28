@@ -1,9 +1,7 @@
-import { useRouter } from 'vue-router';
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
 
-export function useLoginForm() {
-  const router =useRouter();
+export function useRegisterForm() {
 
   const schema = yup.object({
     email: yup.string().trim()
@@ -12,6 +10,7 @@ export function useLoginForm() {
     password: yup.string().trim()
     .required("Пожалуйста введите пароль")
     .min(6, "пароль не может быть меньше 6 символов"),
+    name: yup.string().trim().required("Пожалуйста введите имя"),
   });
 
   const { handleSubmit } = useForm({validationSchema: schema});
@@ -24,18 +23,21 @@ export function useLoginForm() {
     value: password,
     errorMessage: pError,
   } = useField("password");
+  const {
+    value: name,
+    errorMessage: nError,
+  } = useField("name");
 
   const onSubmit = handleSubmit(async values => {
-    console.log(values);
-    router.push('/');
   });
-
 
   return {
     email,
     eError,
     password,
     pError,
+    name,
+    nError,
     onSubmit,
   }
 }
